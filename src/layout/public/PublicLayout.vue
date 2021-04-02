@@ -7,18 +7,13 @@
 
 <script lang="ts">
     import {defineComponent, getCurrentInstance, computed, reactive, toRefs, onMounted} from 'vue';
-    import router from '/@/router';
     import {useRouter} from 'vue-router';
-    import {get as httpGet} from "/@/api";
     import imgSrc from '../../assets/images/backgound-img.jpg';
 
     export default defineComponent({
         name: 'PublicLayout',
         setup() {
             onMounted(() => {
-                // httpGet('/@/public/backgound-img.jpg',undefined,{baseURL:'127.0.0.1',responseType: 'blob'}).then((res)=>{
-                //     state.backgroundImg = window.URL.createObjectURL(res)
-                // })
             })
             const {ctx} = getCurrentInstance() as any;
             const {currentRoute} = useRouter();

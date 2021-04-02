@@ -20,7 +20,7 @@
                 </a-row>
                 <a-row class="btn-content" type="flex" justify="center" :gutter="8">
                     <a-col>
-                        <a-button @click="back">返回</a-button>
+                        <a-button @click="back" type="danger">返回</a-button>
                     </a-col>
                     <a-col>
                         <a-button type="primary" @click="submit" :loading="confirmLoading">
@@ -203,7 +203,7 @@
 <style scoped>
     .title-input {
         border: none;
-        width: 50vw;
+        width: 1014px;
         height: 40px;
         font-size: 20px;
         border-bottom: 1px solid #ddd;

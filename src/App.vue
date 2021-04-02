@@ -43,13 +43,11 @@
         height: 100%;
         z-index: 0;
         zoom: 1;
-        background-color: #ffff;
-        background-repeat: no-repeat;
-        background-position: center 0!important;
+        background-color: #dddddd;
         background-size: cover;
         -webkit-background-size: cover;
         -o-background-size: cover;
-        background-attachment: fixed!important;
+        background-attachment: fixed !important;
         opacity: .7;
     }
 
