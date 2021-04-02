@@ -124,79 +124,24 @@
                 state.editor = instance;
                 instance.create();
             };
-            let customUploadImg = (resultFiles: File, insertImgFn: Function) => {
+            let customUploadImg = async (resultFiles: File, insertImgFn: Function) => {
                 if (resultFiles) {
                     resultFile = resultFiles;
-                    loadImg(resultFile[0], (url: string) => {
-                        insertImgFn(upLoadUrl + url);
-                    });
+                    const uploadData = await sendFile(resultFile[0]);
+                    insertImgFn(upLoadUrl + uploadData.data.imgUrl);
                 }
             };
 
-            let path = '';
-            const loadImg = (file: File, cb: Function) => {
-                let ready = new FileReader();
-                /*开始读取指定的Blob对象或File对象中的内容.
-                当读取操作完成时,readyState属性的值会成为DONE,如果设置了onloadend事件处理程序,则调用之.
-                同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.*/
-                ready.readAsDataURL(file);
-                ready.onload = function () {
-                    let re = this.result;
-                    let img = new Image();
-                    img.src = String(re);
-                    img.onload = (e: any) => {
-                        path = e['path'][0];
-                        state.widthValue = e['path'][0]['width'];
-                        state.heightValue = e['path'][0]['height'];
-                        canvasDataURL(path, cb);
-                    };
-                };
-            };
-            const canvasDataURL = (path: string, cb: Function) => {
+            const sendFile = async (files: Blob, cb?: Function) => {
                 try {
-                    // 默认按比例压缩
-                    let w = state.widthValue * state.defaultSlca / 100,
-                        h = state.heightValue * state.defaultSlca / 100;
-                    //生成canvas
-                    let canvas = document.createElement('canvas');
-                    let canvasCtx: any = canvas.getContext('2d');
-                    // 创建属性节点
-                    let anw: any = document.createAttribute('width');
-                    anw.nodeValue = w;
-                    let anh: any = document.createAttribute('height');
-                    anh.nodeValue = h;
-                    canvas.setAttributeNode(anw);
-                    canvas.setAttributeNode(anh);
-                    canvasCtx.drawImage(path, 0, 0, w, h);
-                    let base64 = canvas.toDataURL('image/jpeg', 1);
-                    let file = convertBase64UrlToBlob(base64);
-                    sendFile(file, cb);
-                } catch (e) {
-                    console.log(e);
-                    message.error('压缩图片错误：' + e);
-                }
-            };
-            const convertBase64UrlToBlob = (urlData: string) => {
-                let arr: string[] = urlData.split(','),
-                    str = arr[0],
-                    mstr: any = str.match(/:(.*?);/),
-                    mime = mstr[1],
-                    bstr = atob(arr[1]),
-                    n = bstr.length, u8arr = new Uint8Array(n);
-                while (n--) {
-                    u8arr[n] = bstr.charCodeAt(n);
-                }
-                return new Blob([u8arr], {type: mime});
-            };
-            const sendFile = (files: Blob, cb: Function) => {
-                let data = new FormData();
-                data.append('imageData', files, 'filename.jpg');
-                uploadimg(data).then((res) => {
+                    let data = new FormData();
+                    data.append('imageData', files, 'filename.jpg');
+                    const uploadData = await uploadimg(data);
                     state.visible = false;
-                    cb(res.data.imgUrl);
-                }).catch((err) => {
-                    message.error(err || '上传错误');
-                });
+                    return uploadData;
+                } catch (e) {
+                    throw Error(e.message || '上传错误')
+                }
             };
             const back = () => {
                 push({
